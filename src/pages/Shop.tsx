@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Crown, Key, Gift } from 'lucide-react';
@@ -46,6 +45,27 @@ const Shop = () => {
     };
 
     fetchData();
+
+    // Subscribe to realtime changes for ranks
+    const ranksChannel = supabase
+      .channel('ranks_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ranks' }, () => {
+        fetchData();
+      })
+      .subscribe();
+
+    // Subscribe to realtime changes for keys
+    const keysChannel = supabase
+      .channel('keys_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'keys' }, () => {
+        fetchData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(ranksChannel);
+      supabase.removeChannel(keysChannel);
+    };
   }, []);
 
   const paidRanks = ranks.filter((r) => !r.is_free);

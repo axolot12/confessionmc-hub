@@ -46,9 +46,9 @@ const KeyCard = ({ name, description, price, color, discordUrl = 'https://discor
         )}
 
         <div className="flex items-baseline gap-0.5 mb-4">
-          <span className="text-muted-foreground text-sm">$</span>
+          <span className="text-muted-foreground text-sm">₹</span>
           <span className="font-display text-2xl font-bold" style={{ color }}>
-            {price.toFixed(2)}
+            {price.toFixed(0)}
           </span>
         </div>
 

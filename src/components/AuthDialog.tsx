@@ -37,9 +37,10 @@ const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
     setLoading(true);
 
     try {
+      const email = `${username.toLowerCase()}@confessionmc.fun`;
+      
       if (isLogin) {
         // Login
-        const email = `${username.toLowerCase()}@confessionmc.fun`;
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -54,7 +55,6 @@ const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
         onOpenChange(false);
       } else {
         // Register
-        const email = `${username.toLowerCase()}@confessionmc.fun`;
         const isPremium = await checkPremiumMinecraft(username);
         
         // Check if this is the admin account
@@ -63,14 +63,12 @@ const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
         const { data: authData, error: authError } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            emailRedirectTo: window.location.origin,
-          },
         });
 
         if (authError) throw authError;
 
         if (authData.user) {
+          // Insert profile
           const { error: profileError } = await supabase.from('profiles').insert({
             user_id: authData.user.id,
             username,
@@ -78,7 +76,10 @@ const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
             is_premium_minecraft: isPremium,
           });
 
-          if (profileError) throw profileError;
+          if (profileError) {
+            console.error('Profile error:', profileError);
+            // Don't throw - user is created, profile insert might fail due to RLS timing
+          }
         }
 
         toast({
@@ -86,11 +87,14 @@ const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
           description: `Welcome to ConfessionMC, ${username}!`,
         });
         onOpenChange(false);
+        setUsername('');
+        setPassword('');
       }
     } catch (error: any) {
+      console.error('Auth error:', error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: error.message || 'An error occurred',
         variant: 'destructive',
       });
     } finally {

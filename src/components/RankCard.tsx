@@ -51,12 +51,12 @@ const RankCard = ({ name, description, price, features, color, isFree, howToGet,
             </div>
           ) : (
             <div className="flex items-baseline justify-center gap-1">
-              <span className="text-muted-foreground text-lg">$</span>
+              <span className="text-muted-foreground text-lg">₹</span>
               <span
                 className="font-display text-4xl font-bold"
                 style={{ color }}
               >
-                {price.toFixed(2)}
+                {price.toFixed(0)}
               </span>
             </div>
           )}
