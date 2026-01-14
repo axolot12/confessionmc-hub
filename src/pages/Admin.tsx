@@ -357,10 +357,10 @@ const Admin = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Price ($)</Label>
+                      <Label>Price (₹)</Label>
                       <Input
                         type="number"
-                        step="0.01"
+                        step="1"
                         value={rank.price}
                         onChange={(e) => updateRank(rank.id, 'price', parseFloat(e.target.value))}
                         className="bg-input border-border"
@@ -467,10 +467,10 @@ const Admin = () => {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Price ($)</Label>
+                      <Label>Price (₹)</Label>
                       <Input
                         type="number"
-                        step="0.01"
+                        step="1"
                         value={key.price}
                         onChange={(e) => updateKey(key.id, 'price', parseFloat(e.target.value))}
                         className="bg-input border-border"
